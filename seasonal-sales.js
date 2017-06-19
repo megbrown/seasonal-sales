@@ -12,15 +12,33 @@
 // two different JavaScript variables in your code.
 
 // Use JSON Lint to validate your JSON documents.
-let reqProducts = new XMLHttpRequest();
-// let reqCategories = new XMLHttpRequest();
 
-function displayProducts() {
-	let prodArr = JSON.parse(event.target.responseText).products; //turns JSON into plain ol javascript object, .products returns an array based on what was in the object
+function displayProducts(productsJSON) {
+	let prodArr = JSON.parse(event.target.responseText).products;
 	console.log("Products", prodArr)
 }
+function displayCategories() {
+	let catArr = JSON.parse(event.target.responseText).categories; //turns JSON into plain ol javascript object, .products returns an array based on what was in the object
+	console.log("Categories", catArr)
+}
+function getCategories() {
+	let reqCategories = new XMLHttpRequest();
+	reqCategories.addEventListener("load", displayCategories);
+	reqCategories.open("GET", "data/categories.json");
+	reqCategories.send();
+}
+function getProducts() {
+	let reqProducts = new XMLHttpRequest();
+	reqProducts.addEventListener("load", displayProducts);
+	reqProducts.open("GET", "data/products.json");
+	reqProducts.send();
+}
+getProducts();
+getCategories();
 
-reqProducts.addEventListener("load", displayProducts);
 
-reqProducts.open("GET", "data/products.json");
-reqProducts.send();
+
+
+
+
+
