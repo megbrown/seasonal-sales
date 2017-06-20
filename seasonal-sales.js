@@ -13,28 +13,54 @@
 
 // Use JSON Lint to validate your JSON documents.
 
-function displayProducts(productsJSON) {
-	let prodArr = JSON.parse(event.target.responseText).products;
-	console.log("Products", prodArr)
+let products = null;
+let categories = null;
+let productArea = document.getElementById("print-products");
+
+function buildDOMObj() {
+	let productArr = products.map( function(currentProduct) {
+		let categoryItem = categories.filter( function(category) {
+			return category.id === currentProduct.category_id;
+		})
+		let prodObj = `${categoryItem[0].name}`;
+		return prodObj
+	})
+	products.forEach( function(item, index) {
+		products[index].department = productArr[index];
+		productArea.innerHTML += buildCard(item);
+	})
 }
-function displayCategories() {
-	let catArr = JSON.parse(event.target.responseText).categories; //turns JSON into plain ol javascript object, .products returns an array based on what was in the object
-	console.log("Categories", catArr)
+function buildCard(prodObj) {
+	let card = `<div class="prodCard">
+								<h3>${prodObj.name}</h3>
+								<p>${prodObj.department}</p>
+								<h2>${prodObj.price}</h2>
+							</div>`
+	return card;
+}
+
+function setProducts(productsJSON) {
+	products = JSON.parse(event.target.responseText).products;
+	getCategories();
+}
+function setCategories() {
+	categories = JSON.parse(event.target.responseText).categories;
+	buildDOMObj();
 }
 function getCategories() {
 	let reqCategories = new XMLHttpRequest();
-	reqCategories.addEventListener("load", displayCategories);
+	reqCategories.addEventListener("load", setCategories);
 	reqCategories.open("GET", "data/categories.json");
 	reqCategories.send();
 }
 function getProducts() {
 	let reqProducts = new XMLHttpRequest();
-	reqProducts.addEventListener("load", displayProducts);
+	reqProducts.addEventListener("load", setProducts);
 	reqProducts.open("GET", "data/products.json");
 	reqProducts.send();
 }
 getProducts();
-getCategories();
+
 
 
 
