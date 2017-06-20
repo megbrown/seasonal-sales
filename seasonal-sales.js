@@ -15,6 +15,37 @@
 
 let products = null;
 let categories = null;
+let productWrapper = document.getElementById("print-products");
+
+function changePriceOnPage() {
+
+}
+
+function hearSelectBox(cat) { //only needs to be a event listener that calls calcDiscount
+	let select = document.getElementById("discount-menu");
+	select.addEventListener("change", function() {
+		calcDiscount(cat);
+	})
+}
+
+function calcDiscount() { //compare selected index with category_id, also dynamically generate discount number
+	let catArr = categories.map( function(category) {
+		return category.discount;
+	})
+	let productArr = products.map( function(currentProduct) {
+		if (currentProduct.category_id === 1 && document.getElementById("discount-menu").selectedIndex === 1) {
+			let discountOne = +(currentProduct.price - currentProduct.price * catArr[0]).toFixed(2);
+			console.log(discountOne);
+		} else if (currentProduct.category_id === 2 && document.getElementById("discount-menu").selectedIndex === 2) {
+			let discountTwo = +(currentProduct.price - currentProduct.price * catArr[1]).toFixed(2);
+			console.log(discountTwo);
+		} else if (currentProduct.category_id === 3 && document.getElementById("discount-menu").selectedIndex === 3) {
+			let discountThree = +(currentProduct.price - currentProduct.price * catArr[2]).toFixed(2);
+			console.log(discountThree);
+		}
+	})
+	changePriceOnPage();
+}
 
 function populateSelectBox() {
 	let box1 = document.getElementById("option1");
@@ -28,26 +59,38 @@ function populateSelectBox() {
 	box3.innerHTML = catArr[2];
 }
 
+function displayProducts(productArr) {
+	let cardArr = productArr.map( function(product) {
+		return buildCard(product);
+	})
+  cardArr.forEach( function(card) {
+  let cardWrapper = document.createElement("article");
+  cardWrapper.innerHTML = card;
+  productWrapper.appendChild(cardWrapper);
+	})
+}
+
 function buildDOMObj() {
 	let productArr = products.map( function(currentProduct) {
 		let categoryItem = categories.filter( function(category) {
 			return category.id === currentProduct.category_id;
 		})
-		let prodObj = `${categoryItem[0].name}`;
+		let prodObj = {
+			dept: categoryItem[0].name,
+			name: currentProduct.name,
+      price: currentProduct.price,
+      catId: currentProduct.category_id,
+		}
 		return prodObj
 	})
-	let productArea = document.getElementById("print-products");
-	products.forEach( function(item, index) {
-		products[index].department = productArr[index];
-		productArea.innerHTML += buildCard(item);
-	})
+	displayProducts(productArr)
 }
 
 function buildCard(prodObj) {
 	let card = `<div class="prodCard">
 								<h3>${prodObj.name}</h3>
 								<p>${prodObj.department}</p>
-								<h2>${prodObj.price}</h2>
+								<h2 class="price">$${prodObj.price}</h2>
 							</div>`
 	return card;
 }
@@ -59,7 +102,8 @@ function setProducts(productsJSON) {
 function setCategories() {
 	categories = JSON.parse(event.target.responseText).categories;
 	buildDOMObj();
-	populateSelectBox()
+	populateSelectBox();
+	hearSelectBox(categories);
 }
 function getCategories() {
 	let reqCategories = new XMLHttpRequest();

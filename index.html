@@ -2,13 +2,14 @@
 <html>
 <head>
 	<title>Seasonal Sales</title>
+	<link rel="stylesheet" type="text/css" href="main.css">
 </head>
 <body>
-<select name="discount-menu">
-	<option value="please-select">Select Discount</option>
-	<option id="option1"></option>
-	<option id="option2"></option>
-	<option id="option3"></option>
+<select name="discount" id="discount-menu">
+	<option disabled selected=true value="please-select">Select Discount</option>
+	<option value="option1" id="option1"></option>
+	<option value="option2" id="option2"></option>
+	<option value="option3" id="option3"></option>
 </select>
 <div id="print-products"></div>
 <script src="seasonal-sales.js"></script>
