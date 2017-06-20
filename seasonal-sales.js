@@ -15,7 +15,18 @@
 
 let products = null;
 let categories = null;
-let productArea = document.getElementById("print-products");
+
+function populateSelectBox() {
+	let box1 = document.getElementById("option1");
+	let box2 = document.getElementById("option2");
+	let box3 = document.getElementById("option3");
+	let catArr = categories.map( function(category) {
+		return category.season_discount;
+	})
+	box1.innerHTML = catArr[0];
+	box2.innerHTML = catArr[1];
+	box3.innerHTML = catArr[2];
+}
 
 function buildDOMObj() {
 	let productArr = products.map( function(currentProduct) {
@@ -25,11 +36,13 @@ function buildDOMObj() {
 		let prodObj = `${categoryItem[0].name}`;
 		return prodObj
 	})
+	let productArea = document.getElementById("print-products");
 	products.forEach( function(item, index) {
 		products[index].department = productArr[index];
 		productArea.innerHTML += buildCard(item);
 	})
 }
+
 function buildCard(prodObj) {
 	let card = `<div class="prodCard">
 								<h3>${prodObj.name}</h3>
@@ -46,6 +59,7 @@ function setProducts(productsJSON) {
 function setCategories() {
 	categories = JSON.parse(event.target.responseText).categories;
 	buildDOMObj();
+	populateSelectBox()
 }
 function getCategories() {
 	let reqCategories = new XMLHttpRequest();
@@ -60,6 +74,9 @@ function getProducts() {
 	reqProducts.send();
 }
 getProducts();
+
+
+
 
 
 
